@@ -86,10 +86,31 @@ public class FrmLogin extends JFrame {
 		contentPane.add(txtClave);
 
 	}
+	
+	private String leerUsuario() {
+		if(!txtUsuario.getText().matches("[A-Za-z0-9]+[@][A-Za-z0-9]+[.][a-z]{2,3}")) {
+			JOptionPane.showMessageDialog(null, "Usuario Incorrecto");
+			return null;
+		}
+		return txtUsuario.getText();
+	}
+	
+	private String leerClave() {
+		if(!txtClave.getText().matches("[A-Za-z0-9]+")) {
+			JOptionPane.showMessageDialog(null, "Clave Incorrecta");
+			return null;
+		}
+		return txtClave.getText();
+	}
 
 	void ingresar() {
-		String usuario = txtUsuario.getText();
-		String clave = txtClave.getText();
+		String usuario = leerUsuario(); // txtUsuario.getText();
+		String clave = leerClave(); // txtClave.getText();
+		
+		// Validar
+		if (usuario == null || clave == null) {
+			return;
+		}
 
 		EntityManagerFactory fabrica = Persistence.createEntityManagerFactory("jpa_sesion01");
 		EntityManager manager = fabrica.createEntityManager();
@@ -101,13 +122,13 @@ public class FrmLogin extends JFrame {
 			Usuario u = manager.createQuery(sql, Usuario.class).setParameter("xusr_usua", usuario)
 					.setParameter("xcla_usua", clave).getSingleResult();
 
-			FrmManteProd mantenimiento = new FrmManteProd();
-			mantenimiento.setVisible(true);
+			FrmMenu frame = new FrmMenu();
+			frame.setVisible(true);
 			
 			dispose();
 
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Usuario o clave incorrecto");
+			JOptionPane.showMessageDialog(null, "El usuario o la clave son incorrectos");
 		}
 
 		manager.close();
